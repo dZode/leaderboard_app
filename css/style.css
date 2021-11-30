@@ -33,6 +33,10 @@
   align-items: center;
 }
 
+h1 {
+  display: flex;
+  justify-content: center;
+}
 .grid {
   display: flex;
   flex-wrap: wrap;

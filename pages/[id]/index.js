@@ -2,54 +2,36 @@ import { useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import dbConnect from '../../lib/dbConnect'
-import Pet from '../../models/Pet'
+import Leader from '../../models/Leader'
 
-/* Allows you to view pet card info and delete pet card*/
-const PetPage = ({ pet }) => {
+/* Allows you to view leader card info and delete leader card*/
+const LeaderPage = ({ leader }) => {
   const router = useRouter()
   const [message, setMessage] = useState('')
   const handleDelete = async () => {
-    const petID = router.query.id
+    const leaderID = router.query.id
 
     try {
-      await fetch(`/api/pets/${petID}`, {
+      await fetch(`/api/leaders/${leaderID}`, {
         method: 'Delete',
       })
       router.push('/')
     } catch (error) {
-      setMessage('Failed to delete the pet.')
+      setMessage('Failed to delete the leader.')
     }
   }
 
   return (
-    <div key={pet._id}>
+    <div key={leader._id}>
       <div className="card">
-        <img src={pet.image_url} />
-        <h5 className="pet-name">{pet.name}</h5>
+        <img src={leader.image_url} />
+        <h5 className="pet-name">{leader.first_name}</h5>
         <div className="main-content">
-          <p className="pet-name">{pet.name}</p>
-          <p className="owner">Owner: {pet.owner_name}</p>
-
-          {/* Extra Pet Info: Likes and Dislikes */}
-          <div className="likes info">
-            <p className="label">Likes</p>
-            <ul>
-              {pet.likes.map((data, index) => (
-                <li key={index}>{data} </li>
-              ))}
-            </ul>
-          </div>
-          <div className="dislikes info">
-            <p className="label">Dislikes</p>
-            <ul>
-              {pet.dislikes.map((data, index) => (
-                <li key={index}>{data} </li>
-              ))}
-            </ul>
-          </div>
+          <p className="pet-name">{leader.first_name} {leader.last_name}</p>
+          <p className="pet-name">Highscore: {leader.highscore} Artifacts: {leader.artifact_num}</p>
 
           <div className="btn-container">
-            <Link href="/[id]/edit" as={`/${pet._id}/edit`}>
+            <Link href="/[id]/edit" as={`/${leader._id}/edit`}>
               <button className="btn edit">Edit</button>
             </Link>
             <button className="btn delete" onClick={handleDelete}>
@@ -66,10 +48,10 @@ const PetPage = ({ pet }) => {
 export async function getServerSideProps({ params }) {
   await dbConnect()
 
-  const pet = await Pet.findById(params.id).lean()
-  pet._id = pet._id.toString()
+  const leader = await Leader.findById(params.id).lean()
+  leader._id = leader._id.toString()
 
-  return { props: { pet } }
+  return { props: { leader } }
 }
 
-export default PetPage
+export default LeaderPage
